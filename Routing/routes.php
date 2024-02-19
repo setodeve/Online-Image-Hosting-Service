@@ -18,6 +18,16 @@ return [
         $image = DatabaseHelper::getImage($name);
         return new HTMLRenderer('image', ["image" => $image]);
     },
+    'created'=>function(): HTTPRenderer{
+        $token = ValidationHelper::string($_GET['token']??null);
+        $image = DatabaseHelper::getImagewithToken($token);
+        return new HTMLRenderer('created', ["token"=>$token]);
+    },
+    'delete'=>function(): HTTPRenderer{
+        $token = ValidationHelper::string($_GET['token']??null);
+        DatabaseHelper::deleteImage($token);
+        return new HTMLRenderer('delete', []);
+    },
     'no-exist'=>function(): HTTPRenderer{
         return new HTMLRenderer('no-exist', []);
     },

@@ -18,7 +18,6 @@ class DatabaseHelper
                 array_push($images,$row);
             }
         }
-        if (!$images) throw new Exception('Could not find images in database');
 
         return $images;
     }
@@ -37,18 +36,40 @@ class DatabaseHelper
             header("Location: no-exist");
             exit;
         }
-
         return $image;
     }
 
-    public static function setImage(array $data,string $imagePath){
+    public static function getImagewithToken(string $token): array{
+        $db = new MySQLWrapper();
+        $stmt = $db->prepare("SELECT * FROM images WHERE token = ?");
+        $stmt->bind_param('s', $token);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $image = $result->fetch_assoc();
+        
+        if (!$image || ($image["deleted_at"] <= date("Y-m-d H:i:s", time()))){
+            header("Location: no-exist");
+            exit;
+        }
+        return $image;
+    }
+
+    public static function setImage(array $data,string $imagePath,string $token){
         $db = new MySQLWrapper();
         $data = ValidationHelper::stringObject($data);
         $comment = htmlspecialchars($data['comment'], ENT_QUOTES, "UTF-8");
         $imagePath = htmlspecialchars($imagePath, ENT_QUOTES, "UTF-8");
         $date = self::getTime($data["expiry"]);
-        $stmt = $db->prepare('INSERT INTO images (img, comment, deleted_at) VALUES (?, ?, ?)');
-        $stmt->bind_param('sss', $imagePath, $comment, $date);
+        $stmt = $db->prepare('INSERT INTO images (img, comment, token, deleted_at) VALUES (?, ?, ?, ?)');
+        $stmt->bind_param('ssss', $imagePath, $comment, $token, $date);
+        $stmt->execute();
+    }
+
+    public static function deleteImage(string $token){
+        $db = new MySQLWrapper();
+        $stmt = $db->prepare("DELETE FROM images WHERE token = ?");
+        $stmt->bind_param('s', $token);
         $stmt->execute();
     }
 

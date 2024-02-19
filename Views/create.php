@@ -13,10 +13,10 @@ if ($_POST) {
   if(!in_array($extension, ['jpeg', 'jpg', 'png', 'gif'])) {
     throw new Exception('Not Supporte this extention');
   }
-
+  $token = uniqid('',true);
   move_uploaded_file($_FILES["image"]["tmp_name"],"images/" . $imageName);
-  DatabaseHelper::setImage($_POST, $imageName);
-  header("Location: images");
+  DatabaseHelper::setImage($_POST, $imageName, $token);
+  header("Location: created?token=".$token);
   exit;
 }
 else {

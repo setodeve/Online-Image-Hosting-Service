@@ -13,6 +13,7 @@ class CreateComputerImagesTable implements SchemaMigration
                 id BIGINT PRIMARY KEY AUTO_INCREMENT,
                 img TEXT NOT NULL,
                 comment VARCHAR(255) NOT NULL,
+                token VARCHAR(255) NOT NULL,
                 deleted_at TIMESTAMP NOT NULL,
                 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
