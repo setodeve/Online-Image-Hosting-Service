@@ -8,62 +8,65 @@ use Exception;
 
 class DatabaseHelper
 {
-    public static function getSnipets(): array{
+    public static function getImages(): array{
         $db = new MySQLWrapper();
-        $snipets = array();
-        $result = $db->query('SELECT * FROM snipets');
+        $images = array();
+        $result = $db->query('SELECT * FROM images');
         while($row = $result->fetch_assoc()) {
             if (($row["deleted_at"] <= date("Y-m-d H:i:s", time()))){
             }else{
-                array_push($snipets,$row);
+                array_push($images,$row);
             }
         }
-        if (!$snipets) throw new Exception('Could not find snipets in database');
+        if (!$images) throw new Exception('Could not find images in database');
 
-        return $snipets;
+        return $images;
     }
 
-    public static function getSnipet(int $id): array{
+
+    public static function getImage(string $name): array{
         $db = new MySQLWrapper();
-        $stmt = $db->prepare("SELECT * FROM snipets WHERE id = ?");
-        $stmt->bind_param('i', $id);
+        $stmt = $db->prepare("SELECT * FROM images WHERE img = ?");
+        $stmt->bind_param('s', $name);
         $stmt->execute();
 
         $result = $stmt->get_result();
-        $snipet = $result->fetch_assoc();
+        $image = $result->fetch_assoc();
         
-        if (!$snipet || ($snipet["deleted_at"] <= date("Y-m-d H:i:s", time()))){
+        if (!$image || ($image["deleted_at"] <= date("Y-m-d H:i:s", time()))){
             header("Location: no-exist");
             exit;
         }
 
-        return $snipet;
+        return $image;
     }
 
-    public static function setSnipet(array $data){
+    public static function setImage(array $data,string $imagePath){
         $db = new MySQLWrapper();
         $data = ValidationHelper::stringObject($data);
-        $title = htmlspecialchars($data['title'], ENT_QUOTES, "UTF-8");
-        $content = htmlspecialchars($data['content'], ENT_QUOTES, "UTF-8");
-        $language = htmlspecialchars($data['language'], ENT_QUOTES, "UTF-8");
+        $comment = htmlspecialchars($data['comment'], ENT_QUOTES, "UTF-8");
+        $imagePath = htmlspecialchars($imagePath, ENT_QUOTES, "UTF-8");
+        $date = self::getTime($data["expiry"]);
+        $stmt = $db->prepare('INSERT INTO images (img, comment, deleted_at) VALUES (?, ?, ?)');
+        $stmt->bind_param('sss', $imagePath, $comment, $date);
+        $stmt->execute();
+    }
+
+    private static function getTime($expiry){
         $time = time();
-        if ($data["expiry"] == "10 seconds"){
+        if ($expiry == "10 seconds"){
             $time += 10;
-        }elseif ($data["expiry"] == "10 minitues"){
+        }elseif ($expiry == "10 minitues"){
             $time += 600;
-        }elseif ($data["expiry"] == "1 hours"){
+        }elseif ($expiry == "1 hours"){
             $time += 3600;
-        }elseif ($data["expiry"] == "1 day"){
+        }elseif ($expiry == "1 day"){
             $time += (24*3600);
-        }elseif ($data["expiry"] == "1 week"){
+        }elseif ($expiry == "1 week"){
             $time += (24*3600*7);
         }else{
             $time += 10;
         }
-        $date = date("Y-m-d H:i:s", $time);
-
-        $stmt = $db->prepare('INSERT INTO snipets (title, content, lang, deleted_at) VALUES (?, ?, ?, ?)');
-        $stmt->bind_param('ssss', $title, $content, $language, $date);
-        $stmt->execute();
+        return date("Y-m-d H:i:s", $time);
     }
 }

@@ -11,6 +11,16 @@ class ValidationHelper
         return $value;
     }
 
+    public static function string($value): string
+    {
+        $sanitized_input = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if ($sanitized_input === false){
+            throw new \InvalidArgumentException("The provided value is not a valid string.");
+            exit;
+        }
+        return $value;
+    }
+
     public static function stringObject($value): array
     {
         foreach ($value as $v) {
