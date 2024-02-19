@@ -14,6 +14,7 @@ class CreateComputerImagesTable implements SchemaMigration
                 img TEXT NOT NULL,
                 comment VARCHAR(255) NOT NULL,
                 token VARCHAR(255) NOT NULL,
+                view BIGINT NOT NULL,
                 deleted_at TIMESTAMP NOT NULL,
                 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

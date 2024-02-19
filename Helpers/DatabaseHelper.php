@@ -25,8 +25,15 @@ class DatabaseHelper
 
     public static function getImage(string $name): array{
         $db = new MySQLWrapper();
+        
+        $stmt = $db->prepare("UPDATE images set view = view + 1 where img = ?");
+        $stmt->bind_param('s', $name);
+        $stmt->execute();
+
+        $stmt = $db->prepare("SELECT * FROM images WHERE img = ?");
         $stmt = $db->prepare("SELECT * FROM images WHERE img = ?");
         $stmt->bind_param('s', $name);
+        
         $stmt->execute();
 
         $result = $stmt->get_result();
@@ -61,8 +68,9 @@ class DatabaseHelper
         $comment = htmlspecialchars($data['comment'], ENT_QUOTES, "UTF-8");
         $imagePath = htmlspecialchars($imagePath, ENT_QUOTES, "UTF-8");
         $date = self::getTime($data["expiry"]);
-        $stmt = $db->prepare('INSERT INTO images (img, comment, token, deleted_at) VALUES (?, ?, ?, ?)');
-        $stmt->bind_param('ssss', $imagePath, $comment, $token, $date);
+        $view = 0;
+        $stmt = $db->prepare('INSERT INTO images (img, comment, token, view, deleted_at) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bind_param('sssis', $imagePath, $comment, $token, $view, $date);
         $stmt->execute();
     }
 
