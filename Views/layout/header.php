@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/003ee0b599.js" crossorigin="anonymous"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
-    <title>Snipet Service</title>
+    <title>Image Hosting</title>
 </head>
 <body>
 <main class="container mt-5 mb-5">
@@ -33,11 +34,23 @@ footer {
   padding: 20px;
 }
 label{
-    font-size: large;
-    font-weight: bold;
-    color: #848484;
+  font-size: large;
+  font-weight: bold;
+  color: #848484;
 }
-input[type="text"] {
+
+.thumb-image{
+  width: 50%;
+  margin: auto;
+  display: block;
+}
+
+.image-aleart{
+  color: #e99795;
+  font-size:small;
+  font-weight: lighter;
+}
+input,select {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
@@ -54,7 +67,7 @@ button {
   margin-top: 10px;
 }
 
-.snipet-container{
+.image-container{
   font-size: large;
   font-weight: bold;
   color: #848484;
@@ -79,30 +92,53 @@ button {
 
 #input-container {
   width: 100%;
-  /* padding: 30px ; */
   margin: 10px 0;
   height: 500px;
   border: 2px solid #ddd;
   box-sizing: border-box;
 }
 
-.snipets-container{
+.images-container{
   display: flex;
   flex-wrap: wrap;
-
 }
 
-.snipet-item:hover{
-  color: #797253;
+.image-item:hover{
+  color: inherit;
+  background-color: #fff2bf;
+  transition: 0.1s;
+  opacity: 0.5;
 }
-.snipet-item{
+.image-item{
+  padding: 10px;
   width: 45%;
   height: 30%;
   background-color: #f0ebe9;
   color: black;
-  padding: 10px;
   margin: 1% 2%;
   text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.image-single {
+  width: 100%;
+  height: 400px;
+  margin: auto;
+  display: block;
+  object-fit: cover;
+  
+}
+
+.image-detail {
+  height: 400px;
+  margin: auto;
+  display: block;
+  object-fit: cover;
+  cursor: pointer;
+
+  
 }
 
 .no-exist{
@@ -130,6 +166,6 @@ i {
 <header>
   <div>
     <a href="/"><i class="fa-solid fa-plus"></i></a>
-    <a href="snipets"><i class="fa-solid fa-list"></i></a>
+    <a href="images"><i class="fa-solid fa-list"></i></a>
   </div>
 </header>
