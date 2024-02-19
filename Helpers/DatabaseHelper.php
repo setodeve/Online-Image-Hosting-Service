@@ -26,24 +26,13 @@ class DatabaseHelper
     public static function getImage(string $name): array{
         $db = new MySQLWrapper();
         
+        $image = self::existImage($name);
+
         $stmt = $db->prepare("UPDATE images set view = view + 1 where img = ?");
         $stmt->bind_param('s', $name);
         $stmt->execute();
-
-        $stmt = $db->prepare("SELECT * FROM images WHERE img = ?");
-        $stmt = $db->prepare("SELECT * FROM images WHERE img = ?");
-        $stmt->bind_param('s', $name);
         
-        $stmt->execute();
-
-        $result = $stmt->get_result();
-        $image = $result->fetch_assoc();
-        
-        if (!$image || ($image["deleted_at"] <= date("Y-m-d H:i:s", time()))){
-            header("Location: no-exist");
-            exit;
-        }
-        return $image;
+        return self::existImage($name);
     }
 
     public static function getImagewithToken(string $token): array{
@@ -79,6 +68,22 @@ class DatabaseHelper
         $stmt = $db->prepare("DELETE FROM images WHERE token = ?");
         $stmt->bind_param('s', $token);
         $stmt->execute();
+    }
+
+    private static function existImage(string $name){
+        $db = new MySQLWrapper();
+        $stmt = $db->prepare("SELECT * FROM images WHERE img = ?");
+        $stmt->bind_param('s', $name);        
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $image = $result->fetch_assoc();
+        
+        if (!$image || ($image["deleted_at"] <= date("Y-m-d H:i:s", time()))){
+            header("Location: no-exist");
+            exit;
+        }
+        return $image;
     }
 
     private static function getTime($expiry){
