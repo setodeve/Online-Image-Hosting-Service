@@ -7,17 +7,16 @@ use Response\Render\HTMLRenderer;
 
 return [
     ''=>function(): HTTPRenderer{
-        $snipets = DatabaseHelper::getSnipets();
-        return new HTMLRenderer('create', ['snipets'=>$snipets]);
+        return new HTMLRenderer('create', []);
     },
-    'snipets'=>function(): HTTPRenderer{
-        $snipets = DatabaseHelper::getSnipets();
-        return new HTMLRenderer('snipets', ['snipets'=>$snipets]);
+    'images'=>function(): HTTPRenderer{
+        $images = DatabaseHelper::getImages();
+        return new HTMLRenderer('images', ["images" => $images]);
     },
-    'snipet'=>function(): HTTPRenderer{
-        $id = ValidationHelper::integer($_GET['id']??null);
-        $snipet = DatabaseHelper::getSnipet($id);
-        return new HTMLRenderer('snipet', ['snipet'=>$snipet]);
+    'image'=>function(): HTTPRenderer{
+        $name = ValidationHelper::string($_GET['name']??null);
+        $image = DatabaseHelper::getImage($name);
+        return new HTMLRenderer('image', ["image" => $image]);
     },
     'no-exist'=>function(): HTTPRenderer{
         return new HTMLRenderer('no-exist', []);
