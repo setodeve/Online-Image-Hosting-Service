@@ -10,14 +10,12 @@ class CreateComputerImagesTable implements SchemaMigration
     {
         return [
             "CREATE TABLE IF NOT EXISTS images (
-                id BIGINT PRIMARY KEY,
+                id BIGINT PRIMARY KEY AUTO_INCREMENT,
                 img TEXT NOT NULL,
                 comment VARCHAR(255) NOT NULL,
-                user_id BIGINT NOT NULL,
                 deleted_at TIMESTAMP NOT NULL,
                 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id)
+                updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )"
         ];
     }
